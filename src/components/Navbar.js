@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState } from "react";
 import {
   AppBar,
   makeStyles,
@@ -9,7 +9,7 @@ import {
   Avatar,
   alpha,
 } from "@material-ui/core";
-import { Search, Mail, Notifications } from "@material-ui/icons";
+import { Search, Mail, Notifications, Cancel } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   toolBar: {
@@ -40,18 +40,31 @@ const useStyles = makeStyles((theme) => ({
     },
     width: "50%",
     [theme.breakpoints.down("sm")]: {
-      display: "none",
+      display: (props) => (props.open ? "flex" : "none"),
+      width: "70%",
     },
   },
   searchButton: {
     marginRight: theme.spacing(2),
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
   },
   input: {
     color: "white",
+    marginLeft: theme.spacing(1),
+  },
+  cancel: {
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
   },
   icons: {
     display: "flex",
     alignItems: "center",
+    [theme.breakpoints.down("sm")]: {
+      display: (props) => (props.open ? "none" : "flex"),
+    },
   },
   badge: {
     marginRight: theme.spacing(2),
@@ -59,7 +72,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Navbar = () => {
-  const classes = useStyles();
+  const [open, setOpen] = useState(false);
+
+  const classes = useStyles({ open });
 
   return (
     <AppBar>
@@ -67,15 +82,19 @@ const Navbar = () => {
         <Typography className={classes.logoLg}>Koko Dev</Typography>
         <Typography className={classes.logoSm}>KOKO</Typography>
         <div className={classes.search}>
-          <Search className={classes.searchButton} />
+          <Search />
           <InputBase
             placeholder="Search…"
             inputProps={{ "aria-label": "search" }}
             className={classes.input}
           />
+          <Cancel className={classes.cancel} onClick={() => setOpen(false)} />
         </div>
         <div className={classes.icons}>
-          <Search className={classes.searchButton} />
+          <Search
+            className={classes.searchButton}
+            onClick={() => setOpen(true)}
+          />
           <Badge badgeContent={3} color="primary" className={classes.badge}>
             <Mail />
           </Badge>
